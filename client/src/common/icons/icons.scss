@@ -1,0 +1,29 @@
+.icons-container {
+	display: flex;
+	flex-wrap: wrap;
+
+}
+.font-box {
+	display: inline-block;
+	cursor: pointer;
+	// width: 3rem;
+	width: 160px;
+	&:hover {
+		background-color: #563d7c;
+		color: #fff;
+	}
+
+	i {
+		display: block;
+		// font-size: 2rem;
+		font-size: 50px;
+	}
+	span{
+		display: block;
+	}
+
+}
+
+.icons-footer {
+	margin: 100px auto;
+}

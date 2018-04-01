@@ -1,0 +1,138 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+<!-- Force latest IE rendering engine or ChromeFrame if installed -->
+<!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><![endif]-->
+<meta charset="utf-8">
+<title>微易资源上传</title>
+<meta name="description" content="File Upload widget with multiple file selection, drag&amp;drop support and progress bar for jQuery. Supports cross-domain, chunked and resumable file uploads. Works with any server-side platform (PHP, Python, Ruby on Rails, Java, Node.js, Go etc.) that supports standard HTML form file uploads.">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- Bootstrap styles -->
+<!-- <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css"> -->
+<link href="//cdn.bootcss.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
+<!-- Generic page styles -->
+<!-- CSS to style the file input field as button and adjust the Bootstrap progress bars -->
+<link rel="stylesheet" href="//res.winbaoxian.com/autoupload_asset/common/jqueryfileupload_6c35df3755.css">
+<style>
+    #alert {
+        text-align: center;
+        line-height: 3rem;
+        position: fixed;
+        width: 100%;
+        z-index: 1;
+        top: 3rem;
+        display: none;
+    }
+</style>
+</head>
+<body>
+<div class="container">
+    <h1 class="lead">微易资源上传</h1>
+    <br>
+    <p class="bg-danger" id="alert"></p>
+    <!-- The fileinput-button span is used to style the file input field as button -->
+    <form id="fileupload" action="/upload/resource" method="POST" enctype="multipart/form-data">
+        <span class="btn btn-success fileinput-button">
+            <i class="glyphicon glyphicon-plus"></i>
+            <span>Select files...</span>
+            <!-- The file input field used as target for the file upload widget -->
+            <!-- <input id="fileupload" type="file" name="image" multiple> -->
+            <input type="file" name="resources" multiple>
+            <!-- <input type="file" name="files[]" multiple> -->
+        </span>
+        <br>
+        <br>
+        <br>
+        <div class="form-group">
+            <label for="bucket">请选择要上传的目标项目路径:</label>
+            <select name="prefix" id="bucket" class="form-control">
+                <% for(var i=0; i<selectors.length; i++) {%>
+                    <option value="<%=selectors[i].key %>"><%= selectors[i].name %></option>
+                <% } %>
+            </select>
+        </div>
+    </form>
+    
+    <br>
+    <br>
+    <!-- The global progress bar -->
+    <div id="progress" class="progress">
+        <div class="progress-bar progress-bar-success"></div>
+    </div>
+    <!-- The container for the uploaded files -->
+    <div id="files" class="files"></div>
+    <br>
+
+
+    <div id="result"></div>
+</div>
+<!-- <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script> -->
+<script src="//cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
+<script src="//res.winbaoxian.com/autoupload_asset/common/jqueryuiwidget_0b44270691.js"></script>
+<script src="//res.winbaoxian.com/autoupload_asset/common/jqueryiframetransport_7b39a42a7a.js"></script>
+<script src="//res.winbaoxian.com/autoupload_asset/common/jqueryfileupload_2340c47a59.js"></script>
+
+<script src="//cdn.bootcss.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+<script src="//cdn.bootcss.com/clipboard.js/1.5.12/clipboard.min.js"></script>
+<script src="//cdn.bootcss.com/blueimp-JavaScript-Templates/3.4.0/js/tmpl.js"></script>
+
+
+<script type="text/x-tmpl" id="tmpl-demo">
+    <ul>
+        <li style="margin-top:2rem;"> 
+            <h3>文件名：{%=o.name%}</h3>
+            <h5>{%=o.url%}</h5>
+            <button class="btn btn-success clip" data-clipboard-text="{%=o.url%}">点击复制链接地址</button>
+        </li>
+    </ul>
+</script>
+
+<script>
+/*jslint unparam: true */
+/*global window, $ */
+$(function () {
+    'use strict';
+    // Change this to the location of your server-side upload handler:
+    $('#fileupload').fileupload({
+        url: '/upload/resource',
+        dataType: 'json',
+        done: function (e, data) {
+            var elem = document.getElementById('files');
+            // $.each(data.result.files, function (index, file) {
+                var file = data.result
+                if(file.error){
+                    console.error(file.error);
+                    $('#alert').html(file.error);
+                    $('#alert').show();
+                    setTimeout( function(){
+                        $('#alert').hide();
+                    }, 3000);
+                    return;
+                }
+                var url = data.url;
+                var obj = {
+                    name: name,
+                    url: file.url,
+                }
+                elem.innerHTML += tmpl("tmpl-demo", obj);
+            // });
+            new Clipboard('.clip');
+        },
+        fail: function(e, data){
+            console.log('fail')
+            console.log(data)
+        },
+        progressall: function (e, data) {
+            var progress = parseInt(data.loaded / data.total * 100, 10);
+            $('#progress .progress-bar').css(
+                'width',
+                progress + '%'
+            );
+        }
+    }).prop('disabled', !$.support.fileInput)
+        .parent().addClass($.support.fileInput ? undefined : 'disabled');
+});
+
+</script>
+</body>
+</html>

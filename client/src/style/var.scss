@@ -1,0 +1,17 @@
+@import './common.scss';
+$text1: #333;
+$text2: #666;
+$text3: #999;
+
+$primary: #FF8F24; 
+
+@mixin fz24 {
+	font-size: 0.32rem;
+	line-height: 0.32rem;
+}
+
+@mixin fz20 {
+	font-size: 0.267rem;
+	line-height: 0.267rem;
+}
+

@@ -1,0 +1,16 @@
+# trigger_build_develop:
+#   stage: deploy
+#   only:
+#     - develop
+#   tags: 
+#     - curl
+#   script:
+#     - npm -v
+# trigger_build_product:
+#   stage: deploy
+#   only:
+#     - master
+#   tags: 
+#     - curl
+#   script:
+#     - npm -v
